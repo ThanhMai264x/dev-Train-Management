@@ -157,8 +157,8 @@ public class BookingManager {
                 Booking indexBooking = (Booking) index.info;
 
                 // Compare based on `tcode` and `pcode`
-                if (currentBooking.getTcode().compareTo(indexBooking.getTcode()) > 0
-                        || (currentBooking.getTcode().equals(indexBooking.getTcode())
+                if (currentBooking.getBcode().compareTo(indexBooking.getBcode()) > 0
+                        || (currentBooking.getBcode().equals(indexBooking.getBcode())
                         && currentBooking.getPcode().compareTo(indexBooking.getPcode()) > 0)) {
 
                     // Swap the bookings
@@ -179,7 +179,7 @@ public class BookingManager {
             Booking booking = (Booking) current.getInfo();  // Cast to Booking to access properties
 
             // Check if the tcode and pcode match, and if the booking is not already paid
-            if (booking.getTcode().equals(tcode) && booking.getPcode().equals(pcode)) {
+            if (booking.getBcode().equals(tcode) && booking.getPcode().equals(pcode)) {
                 if (booking.getState() != 1) {  // Check if booking is unpaid
                     booking.setState(1);  // Mark as paid
                     System.out.println("Booking has been marked as paid.");
@@ -196,13 +196,13 @@ public class BookingManager {
     }
 
     //function Leave the train
-    public boolean leaveTrain(String tcode, String pcode) {
+    public boolean leaveTrain(String bcode, String pcode) {
         LL_Node p = bookingList.getFirst();
         Booking b;
 
         while (p != null) {
             b = (Booking) p.getInfo();
-            if (b.getTcode().equals(tcode) && b.getPcode().equals(pcode) && b.getState() == 1) {
+            if (b.getBcode().equals(bcode) && b.getPcode().equals(pcode) && b.getState() == 1) {
                 b.setState(0);
                 b.setOdate(new Date());
                 return true;
@@ -221,7 +221,7 @@ public class BookingManager {
         // find and delete all booking have corresponding tcode
         while (current != null) {
             Booking booking = (Booking) current.getInfo();
-            if (booking.getTcode().equals(tcode)) {
+            if (booking.getBcode().equals(tcode)) {
                 passengerToMove.addLast(booking.getPcode()); // add passenger to the delete list
                 LL_Node nodeToDelete = current; // save node to be delete
                 current = bookingList.getNext(nodeToDelete); // go to next node

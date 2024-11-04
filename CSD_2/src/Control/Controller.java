@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import LinkedList.*;
 import BSTree.*;
 import Model.Booking;
+import Model.Passenger;
 
 /**
  *
@@ -42,7 +43,7 @@ public class Controller {
     }
 
     //1.2 input & add to the tree
-    private Train addNewTrain() {
+    public Train addNewTrain() {
         String tcode = vali.getString("Train Code: ");
         String name = vali.getString("Train Name: ");
         String dstation = vali.getString("Departing station: ");
@@ -62,14 +63,24 @@ public class Controller {
     }
 
     //1.4 save train tree to file by inorder
-    public void saveToFile(String filename) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename))) {
+    public void saveTrainToFile() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("trains.txt"))) {
             Node root = null;  // Root of the tree should be properly initialized before calling this method
             tm.inOrderSave(root, bw);  // Start in-order traversal and save process
-            System.out.println("Data successfully saved to file " + filename);
+            System.out.println("Data successfully saved to file ");
         } catch (IOException e) {
             System.out.println("Error saving file: " + e.getMessage());
         }
+    }
+
+    //1.5 search train by tcode
+    public void searchTrainByTcode(String tcode) {
+        try {
+            tm.searchbytcode(tcode);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 
     // 1.6 delete by copying
@@ -145,11 +156,39 @@ public class Controller {
             System.out.println("Deleted room " + tcode + ". No booked passengers found in train.");
         }
     }
+
+    //1.10 count number of trains
+    public void countTrain() {
+        try {
+            tm.countTrains();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    //1.11 search by name
+    public void searhByName(String name) {
+        try {
+            tm.searchByName(name);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    //1.12 search booked by tcode
+    public void searchBookByTcode(String tcode) {
+        try {
+            tm.searchBookedByTcode(tcode);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 // ==========================================================================================================
 // 2. Passenger management
 // ==========================================================================================================
     //2.1 load data from file
-
     public void loadPassengerFile() {
         try {
             pm.loadFromFile("passegers.txt");
@@ -159,10 +198,68 @@ public class Controller {
         }
     }
 
+    //2.2 input and add passenger to tree
+    public Passenger addNewPassenger() {
+        String pcode = vali.getString("Passenger Code: ");
+        String name = vali.getString("Passenger Name: ");
+        String phone = vali.getString("Phone: ");
+
+        Passenger newPassenger = new Passenger(pcode, name, phone);
+        return newPassenger;
+    }
+
     //  TEST VER
     //2.3 display data by postorder traversal
     public void displayPassengerTree() {
         pm.getPassengerTree().postOrder(pm.getPassengerTree().getRoot());
+    }
+
+    //2.4 save to file
+    public void savePassengerFile() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("passengers.txt"))) {
+            Node root = null;
+
+            pm.preOrderSave(root, bw);
+            System.out.println("Data successfully saved to file ");
+        } catch (IOException e) {
+            System.out.println("Error saving file: " + e.getMessage());
+        }
+    }
+
+    //2.5
+    public void searchByPcode(String pcode) {
+        try {
+            pm.searchbyPcode(pcode);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    //2.6 delete by pcode
+    public void deleteByPcode(String pcode) {
+        try {
+            pm.deleteByPcode(pcode);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // 2.7 search passeger by name
+    public void searchByName(String name) {
+        try {
+            pm.searchByName(name);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    //2.8 search train by pcode
+    public void searchTrainByPcode(String pcode) {
+        try {
+            pm.searchBookedByTcode(pcode);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 // ==========================================================================================================
@@ -221,7 +318,7 @@ public class Controller {
     }
 
     //3.4 save booking list to file
-    public void writeFileBook() {
+    public void saveFileBook() {
         try {
             bm.saveToFile("bookings.txt");
             System.out.println("Save successfully!");
@@ -235,6 +332,15 @@ public class Controller {
         try {
             bm.sortBookings();
             System.out.println("Sort successfully!");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    //3.6 pay by tcode and pcode
+    public void payBooking(String tcode, String pcode) {
+        try {
+            bm.paidBooking(tcode, pcode);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

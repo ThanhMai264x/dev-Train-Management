@@ -6,13 +6,18 @@ package Body;
 
 import BSTree.BSTree;
 import BSTree.Node;
+import LinkedList.LL_Node;
+import LinkedList.LinkedList;
+import Model.Booking;
 import Model.Passenger;
+import Model.Train;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
  *
@@ -21,10 +26,16 @@ import java.io.IOException;
 public class PassengerManager {
 
     BSTree passengerTree;
+    private LinkedList bookingList;
     Node root;
+
+    public PassengerManager() {
+        this.bookingList = bookingList;
+    }
 
     public BSTree getPassengerTree() {
         return passengerTree;
+
     }
 
     // 2.1 load from file
@@ -74,15 +85,8 @@ public class PassengerManager {
         System.out.println("Load successfully from " + filepath);
     }
 
-    // 2.2 add passenger
-    public void addPassenger(String pcode, String name, String phone) {
-        Passenger passenger = new Passenger(pcode, name, phone);
-        passengerTree.insert(passenger);  // Them tau vao cay
-        System.out.println("Train added successfully: " + passenger);
-    }
-
     //2.4 Save passenger tree to file by pre-order traversal
-    void preOrderSave(Node node, BufferedWriter bw) throws IOException {
+    public void preOrderSave(Node node, BufferedWriter bw) throws IOException {
         if (node == null) {
             return;
         }
@@ -94,15 +98,6 @@ public class PassengerManager {
         preOrderSave(node.right, bw);
     }
 
-    public void saveToFile(String filename) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename))) {
-            preOrderSave(root, bw);
-            System.out.println("Data successfully saved to file " + filename);
-        } catch (IOException e) {
-            System.out.println("Error saving file: " + e.getMessage());
-        }
-    }
-
     public Passenger getPassengerByCode(String pcode) {
         Node node = passengerTree.search(pcode); // Tìm kiếm node theo mã khach
         if (node != null) {
@@ -110,4 +105,70 @@ public class PassengerManager {
         }
         return null; // Trả về null nếu không tìm thấy
     }
+
+    //2.5 search by pcode
+     public void searchbyPcode(String pcode) {
+        searchbyPcode(root, pcode);
+    }
+
+    private Passenger searchbyPcode(Node root, String pcode) {
+        if (root == null) {
+            return null;
+        }
+        Passenger passenger = (Passenger) root.getInfo();
+        if (passenger.getPcode().equals(pcode)) {
+            return passenger;
+        }
+        if (pcode.compareTo(passenger.getPcode()) < 0) {
+            return searchbyPcode(root.left, pcode);
+        } else {
+            return searchbyPcode(root.right, pcode);
+        }
+
+    }
+
+
+    //  TEST
+    //2.6 delete by pcode
+    public void deleteByPcode(String pcode) {
+        Node passegerNode = passengerTree.search(pcode);
+        if (passegerNode != null) {
+            passengerTree.deleteNodeByCopy(passegerNode);
+        }
+    }
+
+    // 2.7 search by name
+    public void searchByName(String name) {
+
+        Node passegerNode = passengerTree.search(name);
+        if (passegerNode != null) {
+            passengerTree.search(name);
+        }
+    }
+
+    //2.8 search trains by pcode
+    public void searchBookedByTcode(String tcode) {
+        LL_Node current = bookingList.getFirst(); // Get the head of the booking list
+        boolean found = false;
+        System.out.println("Passengers booked for train code " + tcode + ":");
+
+        while (current != null) {
+            // Cast the info to Booking type to access its methods
+            Booking bookingInfo = (Booking) current.getInfo(); // Assuming the info is of type Booking
+
+            // Check if the booking corresponds to the specified train code
+            if (bookingInfo.getBcode().equals(tcode)) {
+                System.out.println("Booking Code: " + bookingInfo.getBcode()
+                        + ", Passenger Code: " + bookingInfo.getPcode()
+                        + ", Order Date: " + bookingInfo.getOdate());
+                found = true;
+            }
+            current = current.next;
+        }
+
+        if (!found) {
+            System.out.println("No bookings found for train code " + tcode);
+        }
+    }
+
 }

@@ -25,6 +25,68 @@ public class BSTree {
     public Node getRoot() {
         return root;
     }
+    // Method to get the height of the node
+
+    //inorder a tree
+    public void inOrder(Node p) {
+        if (p == null) {
+            return;
+        }
+        inOrder(p.left);
+        visit(p);
+        inOrder(p.right);
+    }
+    // preorder a tree
+
+    public void preOrder(Node p) {
+        if (p == null) {
+            return;
+        }
+        visit(p);
+        preOrder(p.left);
+        preOrder(p.right);
+    }
+
+    // postorder a tree
+    public void postOrder(Node p) {
+        if (p == null) {
+            return;
+        }
+        postOrder(p.left);
+        postOrder(p.right);
+        visit(p);
+    }
+
+    public void bfsTraversal() {
+        MyQueue queue = new MyQueue(); // Create a new queue
+        if (root == null) {
+            System.out.println("The tree is empty.");
+            return;
+        }
+
+        queue.enqueue(root); // Enqueue the root node
+
+        while (!queue.isEmpty()) {
+            Node current = (Node) queue.dequeue(); // Dequeue a node
+
+            // Process the current node (e.g., print the train info)
+            System.out.println(current.info);
+
+            // Enqueue left and right children if they exist
+            if (current.left != null) {
+                queue.enqueue(current.left);
+            }
+            if (current.right != null) {
+                queue.enqueue(current.right);
+            }
+        }
+
+    }
+
+    private void visit(Node p) {
+        Model m = (Model) p.info;
+        System.out.println(m.toString());
+    }
 
     public void insert(Model x) {
         Node p = new Node(x);
@@ -57,42 +119,7 @@ public class BSTree {
         }
     }
 
-    //inorder a tree
-    public void inOrder(Node p) {
-        if (p == null) {
-            return;
-        }
-        inOrder(p.left);
-        visit(p);
-        inOrder(p.right);
-    }
-    // preorder a tree
-
-    public void preOrder(Node p) {
-        if (p == null) {
-            return;
-        }
-        visit(p);
-        preOrder(p.left);
-        preOrder(p.right);
-    }
-
-    // postorder a tree
-    public void postOrder(Node p) {
-        if (p == null) {
-            return;
-        }
-        postOrder(p.left);
-        postOrder(p.right);
-        visit(p);
-    }
-
-    private void visit(Node p) {
-        Model m = (Model) p.info;
-        System.out.println(m.toString());
-    }
-
-    // Xóa Node bằng cách gộp (Merging)
+// Xóa Node bằng cách gộp (Merging)
     public void deleteNodeByMerging(Node p) {
         Node f = findParent(p);  // Tìm Node cha
         if (p.left == null) {
@@ -164,4 +191,5 @@ public class BSTree {
             return search(node.right, key);
         }
     }
+
 }

@@ -13,7 +13,7 @@ import java.util.Date;
  */
 public class Booking {
 
-    private String tcode;
+    private String bcode;
     private String pcode;
     private Date odate;
     private Date paidDate;
@@ -21,8 +21,8 @@ public class Booking {
     private int state;
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
-    public Booking(String tcode, String pcode, Date odate, Date paidDate, int seat, int state) {
-        this.tcode = tcode;
+    public Booking(String bcode, String pcode, Date odate, Date paidDate, int seat, int state) {
+        this.bcode = bcode;
         this.pcode = pcode;
         this.odate = odate;
         this.paidDate = paidDate;
@@ -30,8 +30,8 @@ public class Booking {
         this.state = state;
     }
 
-    public String getTcode() {
-        return this.tcode;
+    public String getBcode() {
+        return this.bcode;
     }
 
     public String getPcode() {
@@ -75,7 +75,7 @@ public class Booking {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         String paidStatus = (this.state == 0) ? "Not Paid" : "Paid on " + sdf.format(this.paidDate);
         return String.format("Booking - Train: %s | Passenger: %s | Date: %s | State: %s | Seats: %d",
-                this.tcode, this.pcode, sdf.format(this.odate), paidStatus, this.seat);
+                this.bcode, this.pcode, sdf.format(this.odate), paidStatus, this.seat);
     }
 
 }

@@ -1,0 +1,5 @@
+C001 | John Doe | 0123456789
+C002 | Jane Smith | 0987654321
+C003 | Robert Brown | 0112233445
+C004 | Lisa White | 0125566778
+C005 | Emily Davis | 0198765432

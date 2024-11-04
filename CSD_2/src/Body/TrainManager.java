@@ -6,6 +6,10 @@ package Body;
 
 import BSTree.BSTree;
 import BSTree.Node;
+import LinkedList.LL_Node;
+import LinkedList.LinkedList;
+import Model.Booking;
+import Model.Passenger;
 import Model.Train;
 import Utility.validator;
 import java.io.BufferedReader;
@@ -24,9 +28,11 @@ public class TrainManager {
     Node root;
 
     BSTree trainTree;
+    private LinkedList bookingList;
 
     public TrainManager() {
         this.trainTree = new BSTree();
+        this.bookingList = bookingList;
     }
 
     public BSTree getTrainTree() {
@@ -108,6 +114,27 @@ public class TrainManager {
         inOrderSave(node.right, bw);
     }
 
+    //1.5 search by tcode
+    public void searchbytcode(String tcode) {
+        searchbyTcode(root, tcode);
+    }
+
+    private Train searchbyTcode(Node root, String tcode) {
+        if (root == null) {
+            return null;
+        }
+        Train train = (Train) root.getInfo();
+        if (train.getTcode().equals(tcode)) {
+            return train;
+        }
+        if (tcode.compareTo(train.getTcode()) < 0) {
+            return searchbyTcode(root.left, tcode);
+        } else {
+            return searchbyTcode(root.right, tcode);
+        }
+
+    }
+
     //1.6 Delete by tcode by copying
     public void deleteTrainByCopying(String tcode) {
         Node trainNode = trainTree.search(tcode);
@@ -124,20 +151,65 @@ public class TrainManager {
         }
     }
 
+    //1.8 simple balance
     // 1.10 count number of trains
-    public int countNodes() {
-        return countNodesRec(root);
+    public int countTrains() {
+        return countNodes(root);
     }
 
-    private int countNodesRec(Node root) {
-        if (root == null) {
+    private int countNodes(Node node) {
+        if (node == null) {
             return 0;
         }
-        return 1 + countNodesRec(root.left) + countNodesRec(root.right);
+        return 1 + countNodes(node.left) + countNodes(node.right);
     }
-    // 1.12 search booked by tcode
 
-//funciton for 3.2
+    // 1.11 search train by name
+    public void searchByName(String name) {
+        searchByName(root, name);
+    }
+
+    private void searchByName(Node node, String name) {
+        if (node == null) {
+            return; // Base case: no train found
+        }
+        Train t = (Train) node.getInfo();
+        // Check if the current node's train name matches
+        if (t.getName().equalsIgnoreCase(name)) {
+            System.out.println(t.toString());
+        }
+
+        // Recursively search in the left and right subtrees
+        searchByName(node.left, name);
+        searchByName(node.right, name);
+    }
+
+    // 1.12 search booked by tcode
+    public void searchBookedByTcode(String tcode) {
+        LL_Node current = bookingList.getFirst(); // Get the head of the booking list
+        boolean found = false;
+        System.out.println("Passengers booked for train code " + tcode + ":");
+
+        while (current != null) {
+            // Cast the info to Booking type to access its methods
+            Booking bookingInfo = (Booking) current.getInfo(); // Assuming the info is of type Booking
+
+            // Check if the booking corresponds to the specified train code
+            if (bookingInfo.getBcode().equals(tcode)) {
+                System.out.println("Booking Code: " + bookingInfo.getBcode()
+                        + ", Passenger Code: " + bookingInfo.getPcode()
+                        + ", Order Date: " + bookingInfo.getOdate());
+                found = true;
+            }
+            current = current.next;
+        }
+
+        if (!found) {
+            System.out.println("No bookings found for train code " + tcode);
+        }
+    }
+
+    //funciton for 3.2
     public Train getTrainByCode(String tcode) {
         Node node = trainTree.search(tcode); // Tìm kiếm node theo mã phòng
         if (node != null) {
